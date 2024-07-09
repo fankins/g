@@ -1,0 +1,57 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Curator {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  email     String?
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  points    Int?
+  name      String?
+  agents    Agent[]
+  scores    Score[]
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  email     String?
+  team      Team?    @relation(fields: [teamId], references: [id])
+  teamId    String?
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String?
+  description String?
+  date        DateTime?
+  scores      Score[]
+}
+
+model Score {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  score     Int?
+  event     Event?   @relation(fields: [eventId], references: [id])
+  eventId   String?
+  team      Team?    @relation(fields: [teamId], references: [id])
+  teamId    String?
+}
